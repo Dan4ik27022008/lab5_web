@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+import superagent from 'superagent';
 import http from 'http';
 import fs from 'fs/promises';
 import path from 'path';
@@ -28,6 +29,41 @@ const server = http.createServer(async (req, res) => {
 
     const statusCode = match[1];
     const cacheFilePath = path.join(options.cache, `${statusCode}.jpg`);
+
+    // Обробка методу GET
+    if (req.method === 'GET') {
+      try {
+        const cachedImage = await fs.readFile(cacheFilePath);
+        res.writeHead(200, {
+          'Content-Type': 'image/jpeg',
+          'X-Cache': 'HIT'
+        });
+        return res.end(cachedImage);
+      } catch (readErr) {
+        if (readErr.code !== 'ENOENT') {
+          throw readErr;
+        }
+      }
+
+      // Якщо картинки немає в кеші — завантажуємо з http.cat
+      try {
+        const response = await superagent
+          .get(`https://http.cat/${statusCode}`)
+          .buffer(true);
+
+        const imageBuffer = response.body;
+        await fs.writeFile(cacheFilePath, imageBuffer);
+
+        res.writeHead(200, {
+          'Content-Type': 'image/jpeg',
+          'X-Cache': 'MISS'
+        });
+        return res.end(imageBuffer);
+      } catch (proxyErr) {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+        return res.end(`Картинку для коду ${statusCode} не знайдено (404)`);
+      }
+    }
 
     if (!['GET', 'PUT', 'DELETE'].includes(req.method)) {
       res.writeHead(405, {
