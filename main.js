@@ -65,6 +65,19 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
+    // Обробка методу PUT
+    if (req.method === 'PUT') {
+      const chunks = [];
+      for await (const chunk of req) {
+        chunks.push(chunk);
+      }
+      const imageBuffer = Buffer.concat(chunks);
+
+      await fs.writeFile(cacheFilePath, imageBuffer);
+      res.writeHead(201, { 'Content-Type': 'text/plain; charset=utf-8' });
+      return res.end(`Картинку для коду ${statusCode} успішно збережено в кеш (201)`);
+    }
+
     if (!['GET', 'PUT', 'DELETE'].includes(req.method)) {
       res.writeHead(405, {
         'Content-Type': 'text/plain; charset=utf-8',
