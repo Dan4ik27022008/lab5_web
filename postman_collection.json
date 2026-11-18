@@ -1,0 +1,261 @@
+{
+  "info": {
+    "_postman_id": "87e5dae2-a339-4e52-812f-3501c0c53394",
+    "name": "Lab5_web_cat",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60275962",
+    "_collection_link": "https://go.postman.co/collection/60275962-87e5dae2-a339-4e52-812f-3501c0c53394?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GET 200 (Cache MISS)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"Content-Type is image/jpeg\", function () {\r\n    pm.response.to.have.header(\"Content-Type\", \"image/jpeg\");\r\n});\r\npm.test(\"X-Cache is MISS\", function () {\r\n    pm.response.to.have.header(\"X-Cache\", \"MISS\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:{{port}}/200",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "200"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET 200 (Cache HIT)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"Content-Type is image/jpeg\", function () {\r\n    pm.response.to.have.header(\"Content-Type\", \"image/jpeg\");\r\n});\r\npm.test(\"X-Cache is HIT\", function () {\r\n    pm.response.to.have.header(\"X-Cache\", \"HIT\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:{{port}}/200",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "200"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT 418 (Custom Image)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:{{port}}/418",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "418"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET 418 (After PUT)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"Content-Type is image/jpeg\", function () {\r\n    pm.response.to.have.header(\"Content-Type\", \"image/jpeg\");\r\n});\r\npm.test(\"X-Cache is HIT\", function () {\r\n    pm.response.to.have.header(\"X-Cache\", \"HIT\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:{{port}}/418",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "418"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE 418 (Exists)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:{{port}}/418",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "418"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE 418 (Not Found)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:{{port}}/418",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "418"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET 999 (Invalid Code)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:{{port}}/999",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST 200 (Method Not Allowed)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 405\", function () {\r\n    pm.response.to.have.status(405);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:{{port}}/200",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "200"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "host",
+      "value": ""
+    },
+    {
+      "key": "port",
+      "value": ""
+    }
+  ]
+}

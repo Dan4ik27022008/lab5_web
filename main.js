@@ -15,6 +15,7 @@ program
 program.parse();
 const options = program.opts();
 
+// Асинхронне створення теки кешу перед запуском сервера
 await fs.mkdir(options.cache, { recursive: true });
 
 const server = http.createServer(async (req, res) => {
@@ -22,6 +23,7 @@ const server = http.createServer(async (req, res) => {
     const parsedUrl = new URL(req.url, `http://${options.host}:${options.port}`);
     const match = parsedUrl.pathname.match(/^\/(\d{3})$/);
 
+    // Перевірка коректності шляху (очікується формат /XXX)
     if (!match) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
       return res.end('Помилка: Некоректний шлях або код стану HTTP (404)');
@@ -93,22 +95,20 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
-    if (!['GET', 'PUT', 'DELETE'].includes(req.method)) {
-      res.writeHead(405, {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Allow': 'GET, PUT, DELETE'
-      });
-      return res.end(`Метод ${req.method} не дозволено (405)`);
-    }
+    // Будь-який інший HTTP-метод
+    res.writeHead(405, {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Allow': 'GET, PUT, DELETE'
+    });
+    return res.end(`Метод ${req.method} не підтримується (405)`);
 
-    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end(`Запит ${req.method} для коду ${statusCode} прийнято`);
-  } catch (err) {
+  } catch (unexpectedErr) {
+    console.error('Помилка обробки запиту:', unexpectedErr);
     res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
     res.end('Внутрішня помилка сервера (500)');
   }
 });
 
 server.listen(options.port, options.host, () => {
-  console.log(`Проксі-сервер запущено на http://${options.host}:${options.port}`);
+  console.log(`Кешуючий проксі-сервер працює на http://${options.host}:${options.port}`);
 });
