@@ -78,6 +78,21 @@ const server = http.createServer(async (req, res) => {
       return res.end(`Картинку для коду ${statusCode} успішно збережено в кеш (201)`);
     }
 
+    // Обробка методу DELETE
+    if (req.method === 'DELETE') {
+      try {
+        await fs.unlink(cacheFilePath);
+        res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+        return res.end(`Картинку для коду ${statusCode} видалено з кешу (200)`);
+      } catch (unlinkErr) {
+        if (unlinkErr.code === 'ENOENT') {
+          res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+          return res.end(`Картинку для коду ${statusCode} не знайдено в кеші (404)`);
+        }
+        throw unlinkErr;
+      }
+    }
+
     if (!['GET', 'PUT', 'DELETE'].includes(req.method)) {
       res.writeHead(405, {
         'Content-Type': 'text/plain; charset=utf-8',
